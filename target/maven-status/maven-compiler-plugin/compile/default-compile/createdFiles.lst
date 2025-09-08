@@ -1,4 +1,11 @@
-vn\iotstar\utils\JPAConfig.class
+vn\iotstar\utils\FileUtils.class
 vn\iotstar\controller\admin\CategoryServlet.class
 vn\iotstar\dao\CategoryDAO.class
 vn\iotstar\entity\Category.class
+vn\iotstar\controller\ImageUploadServlet.class
+vn\iotstar\utils\JPAConfig.class
+vn\iotstar\dao\ImageDao.class
+vn\iotstar\entity\Image.class
+vn\iotstar\controller\CategoryIconServlet.class
+vn\iotstar\controller\ImageServlet.class
+vn\iotstar\controller\ImageListServlet.class

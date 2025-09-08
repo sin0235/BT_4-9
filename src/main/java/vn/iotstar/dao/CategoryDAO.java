@@ -68,9 +68,22 @@ public class CategoryDAO {
     public List<Category> findAll() {
         EntityManager em = JPAConfig.getEntityManager();
         try {
-            String jpql = "SELECT c FROM Category c";
+            String jpql = "SELECT c FROM Category c ORDER BY c.catename";
             TypedQuery<Category> query = em.createQuery(jpql, Category.class);
             return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public Category findByName(String catename) {
+        EntityManager em = JPAConfig.getEntityManager();
+        try {
+            TypedQuery<Category> query = em.createQuery(
+                "SELECT c FROM Category c WHERE c.catename = :catename", Category.class);
+            query.setParameter("catename", catename);
+            List<Category> results = query.getResultList();
+            return results.isEmpty() ? null : results.get(0);
         } finally {
             em.close();
         }

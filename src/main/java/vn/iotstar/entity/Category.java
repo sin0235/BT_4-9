@@ -19,23 +19,60 @@ public class Category {
     @Column(name = "cate_name")
     private String catename;
 
-    @Column(name = "icons")
-    private String icon;
+    @Column(name = "icon_path")
+    private String iconPath;
+    
+    @Column(name = "icon_filename")
+    private String iconFilename;
 
     // Constructors
     public Category() {}
-    public Category(String catename, String icon) {
+    
+    public Category(String catename) {
         this.catename = catename;
-        this.icon = icon;
+    }
+    
+    public Category(String catename, String iconPath, String iconFilename) {
+        this.catename = catename;
+        this.iconPath = iconPath;
+        this.iconFilename = iconFilename;
     }
 
     // Getters and setters
-    public Integer getCateid() { return cateid; }
-    public void setCateid(Integer cateid) { this.cateid = cateid; }
+    public Integer getCateid() { 
+        return cateid; 
+    }
+    
+    public void setCateid(Integer cateid) { 
+        this.cateid = cateid; 
+    }
 
-    public String getCatename() { return catename; }
-    public void setCatename(String catename) { this.catename = catename; }
+    public String getCatename() { 
+        return catename; 
+    }
+    
+    public void setCatename(String catename) { 
+        this.catename = catename; 
+    }
 
-    public String getIcon() { return icon; }
-    public void setIcon(String icon) { this.icon = icon; }
+    public String getIconPath() { 
+        return iconPath; 
+    }
+    
+    public void setIconPath(String iconPath) { 
+        this.iconPath = iconPath; 
+    }
+    
+    public String getIconFilename() { 
+        return iconFilename; 
+    }
+    
+    public void setIconFilename(String iconFilename) { 
+        this.iconFilename = iconFilename; 
+    }
+    
+    // Helper method to get full icon URL
+    public String getIconUrl() {
+        return iconFilename != null ? "/category-icons/" + iconFilename : null;
+    }
 }

@@ -7,35 +7,199 @@
     <meta charset="UTF-8">
     <title>Category Form</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        form { max-width: 400px; }
-        label { display: block; margin-top: 10px; font-weight: bold; }
-        input[type="text"] { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
-        button { padding: 10px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; }
-        button:hover { background-color: #218838; }
-        .cancel { background-color: #6c757d; }
-        .cancel:hover { background-color: #5a6268; }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"], input[type="file"] { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .current-icon {
+            margin: 10px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+        .current-icon img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .file-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .btn { 
+            padding: 12px 20px; 
+            background-color: #28a745; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin-right: 10px;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover { 
+            background-color: #218838; 
+        }
+        .btn-secondary { 
+            background-color: #6c757d; 
+        }
+        .btn-secondary:hover { 
+            background-color: #5a6268; 
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .nav-links {
+            margin-bottom: 20px;
+        }
+        .nav-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <h1>${category != null ? 'Edit Category' : 'Add New Category'}</h1>
-    
-    <form method="post" action="${pageContext.request.contextPath}/admin/category/${category != null ? 'update' : 'create'}">
-        <c:if test="${category != null}">
-            <input type="hidden" name="cateid" value="${category.cateid}" />
+    <div class="nav-links">
+        <a href="${pageContext.request.contextPath}/">Trang chủ</a>
+        <a href="${pageContext.request.contextPath}/admin/category">Danh sách danh mục</a>
+    </div>
+
+    <div class="container">
+        <h1>${category != null ? 'Chỉnh Sửa Danh Mục' : 'Thêm Danh Mục Mới'}</h1>
+        
+        <c:if test="${not empty error}">
+            <div class="alert alert-error">
+                ${error}
+            </div>
         </c:if>
         
-        <label for="catename">Category Name:</label>
-        <input type="text" id="catename" name="catename" value="${category.catename}" required 
-               placeholder="Enter category name"/>
+        <c:if test="${not empty success}">
+            <div class="alert alert-success">
+                ${success}
+            </div>
+        </c:if>
         
-        <label for="icon">Icon (CSS class or icon name):</label>
-        <input type="text" id="icon" name="icon" value="${category.icon}" 
-               placeholder="e.g., fa-laptop, fa-book"/>
-        
-        <br><br>
-        <button type="submit">${category != null ? 'Update' : 'Create'}</button>
-        <a href="${pageContext.request.contextPath}/admin/category" class="cancel" style="padding: 10px 15px; text-decoration: none; color: white;">Cancel</a>
-    </form>
+        <form method="post" action="${pageContext.request.contextPath}/admin/category/${category != null ? 'update' : 'create'}"
+              enctype="multipart/form-data">
+            <c:if test="${category != null}">
+                <input type="hidden" name="cateid" value="${category.cateid}" />
+            </c:if>
+            
+            <div class="form-group">
+                <label for="catename">Tên danh mục:</label>
+                <input type="text" id="catename" name="catename" value="${category.catename}" required 
+                       placeholder="Nhập tên danh mục"/>
+            </div>
+            
+            <div class="form-group">
+                <label for="icon">Icon ảnh:</label>
+                
+                <c:if test="${category != null && category.iconFilename != null}">
+                    <div class="current-icon">
+                        <strong>Icon hiện tại:</strong><br>
+                        <img src="${pageContext.request.contextPath}/category-icons/${category.iconFilename}" 
+                             alt="Current icon" />
+                        <p><small>Tên file: ${category.iconFilename}</small></p>
+                    </div>
+                </c:if>
+                
+                <input type="file" id="icon" name="icon" accept="image/*"/>
+                <div class="file-info">
+                    Chấp nhận: .jpg, .jpeg, .png, .gif, .bmp (Tối đa 2MB)
+                    <c:if test="${category != null && category.iconFilename != null}">
+                        <br><em>Để trống nếu không muốn thay đổi icon</em>
+                    </c:if>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn">
+                    ${category != null ? 'Cập Nhật' : 'Thêm Mới'}
+                </button>
+                <a href="${pageContext.request.contextPath}/admin/category" class="btn btn-secondary">
+                    Hủy
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('icon').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                if (fileSize > 2) {
+                    alert('File quá lớn! Vui lòng chọn file nhỏ hơn 2MB.');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Preview image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Remove existing preview
+                    const existingPreview = document.getElementById('iconPreview');
+                    if (existingPreview) {
+                        existingPreview.remove();
+                    }
+                    
+                    // Create new preview
+                    const preview = document.createElement('div');
+                    preview.id = 'iconPreview';
+                    preview.className = 'current-icon';
+                    preview.innerHTML = '<strong>Xem trước:</strong><br><img src="' + e.target.result + '" alt="Preview" style="max-width: 100px; max-height: 100px;">';
+                    
+                    document.getElementById('icon').parentNode.appendChild(preview);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 </body>
 </html>

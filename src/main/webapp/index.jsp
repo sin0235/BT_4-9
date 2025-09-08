@@ -13,42 +13,69 @@
             background-color: #f5f5f5;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             background-color: white;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
         }
         h1 {
             color: #333;
-            margin-bottom: 20px;
-        }
-        p {
-            color: #666;
+            text-align: center;
             margin-bottom: 30px;
         }
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background-color 0.3s;
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
         }
-        .btn:hover {
-            background-color: #0056b3;
+        .nav-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .nav-card:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .nav-card a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .nav-card a:hover {
+            color: #0056b3;
+        }
+        .nav-card p {
+            color: #666;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to Category Management System</h1>
-        <p>Manage your product categories with ease. Create, edit, and organize categories for your business.</p>
-        <a href="${pageContext.request.contextPath}/admin/category" class="btn">Manage Categories</a>
+        <h1>Hệ Thống Quản Lý Danh Mục</h1>
+        
+        <div class="nav-grid">
+            <div class="nav-card">
+                <span class="icon">📁</span>
+                <a href="${pageContext.request.contextPath}/admin/category">Quản Lý Danh Mục</a>
+                <p>Thêm, sửa, xóa danh mục với icon ảnh</p>
+            </div>
+        </div>
     </div>
 </body>
 </html>
