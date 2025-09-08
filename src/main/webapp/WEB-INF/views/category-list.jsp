@@ -9,16 +9,13 @@
     <style>
         body { 
             font-family: Arial, sans-serif; 
-            margin: 20px; 
-            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px; 
+            background-color: #f8f9fa;
         }
         .container {
-            max-width: 1000px;
+            max-width: 800px;
             margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .nav-links {
             margin-bottom: 20px;
@@ -27,21 +24,39 @@
             color: #007bff;
             text-decoration: none;
             margin-right: 15px;
+            font-size: 14px;
         }
         .nav-links a:hover {
             text-decoration: underline;
         }
-        .header {
+        .page-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+        .search-section {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 10px;
             margin-bottom: 20px;
         }
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 200px;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
         .btn { 
-            padding: 10px 15px; 
-            background-color: #007bff; 
+            padding: 8px 16px; 
+            background-color: #6c757d; 
             color: white; 
-            border: none; 
+            border: 1px solid #6c757d; 
             border-radius: 4px; 
             cursor: pointer;
             text-decoration: none;
@@ -49,51 +64,70 @@
             font-size: 14px;
         }
         .btn:hover { 
-            background-color: #0056b3; 
+            background-color: #5a6268; 
+            border-color: #545b62;
         }
-        .btn-success {
-            background-color: #28a745;
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
         }
-        .btn-success:hover {
-            background-color: #218838;
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
         }
         .btn-danger {
             background-color: #dc3545;
+            border-color: #dc3545;
         }
         .btn-danger:hover {
             background-color: #c82333;
+            border-color: #bd2130;
         }
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 12px;
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .table-header {
+            background-color: #b8daed;
+            padding: 15px 20px;
+            font-size: 16px;
+            color: #2c3e50;
+            border-bottom: 1px solid #a8cde2;
+            margin: 0;
         }
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin-top: 20px;
         }
         th, td { 
-            padding: 12px; 
+            padding: 12px 20px; 
             text-align: left; 
-            border-bottom: 1px solid #ddd; 
+            border-bottom: 1px solid #eee; 
         }
         th { 
             background-color: #f8f9fa; 
             font-weight: bold;
+            color: #333;
+            font-size: 14px;
+        }
+        td {
+            font-size: 14px;
         }
         tr:hover {
             background-color: #f8f9fa;
         }
         .category-icon {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             object-fit: cover;
             border-radius: 4px;
             border: 1px solid #ddd;
         }
         .no-icon {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             background-color: #e9ecef;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -101,15 +135,21 @@
             align-items: center;
             justify-content: center;
             color: #6c757d;
-            font-size: 12px;
+            font-size: 10px;
         }
         .actions {
             white-space: nowrap;
         }
+        .actions a {
+            margin-right: 5px;
+            padding: 4px 8px;
+            font-size: 12px;
+        }
         .alert {
-            padding: 15px;
+            padding: 12px 15px;
             margin-bottom: 20px;
             border-radius: 4px;
+            border: 1px solid transparent;
         }
         .alert-error {
             background-color: #f8d7da;
@@ -125,27 +165,32 @@
             text-align: center;
             padding: 50px 20px;
             color: #666;
-        }
-        .stats {
-            background: #f8f9fa;
-            padding: 15px;
+            background: white;
             border-radius: 8px;
-            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .add-btn-container {
+            text-align: right;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div class="nav-links">
         <a href="${pageContext.request.contextPath}/">Trang chủ</a>
-        <a href="${pageContext.request.contextPath}/upload">Upload ảnh</a>
-        <a href="${pageContext.request.contextPath}/images">Thư viện ảnh</a>
     </div>
 
     <div class="container">
-        <div class="header">
-            <h1>Quản Lý Danh Mục</h1>
-            <a href="${pageContext.request.contextPath}/admin/category/edit" class="btn btn-success">
-                + Thêm Danh Mục Mới
+        <h1 class="page-title">Quản lý danh mục</h1>
+        
+        <div class="search-section">
+            <input type="text" class="search-input" placeholder="Tìm kiếm..." id="searchInput">
+            <button class="btn" onclick="searchCategories()">Search</button>
+        </div>
+        
+        <div class="add-btn-container">
+            <a href="${pageContext.request.contextPath}/admin/category/edit" class="btn btn-primary">
+                Thêm danh mục
             </a>
         </div>
         
@@ -163,23 +208,24 @@
         
         <c:choose>
             <c:when test="${not empty categories}">
-                <div class="stats">
-                    <strong>Tổng số danh mục:</strong> ${categories.size()}
-                </div>
-                
-                <table>
+                <div class="table-container">
+                    <div class="table-header">
+                        Danh sách danh mục
+                    </div>
+                    <table>
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Tên danh mục</th>
                             <th>Icon</th>
-                            <th>Tên Danh Mục</th>
-                            <th>Thao Tác</th>
+                            <th>Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
                         <c:forEach var="category" items="${categories}">
                             <tr>
                                 <td>${category.cateid}</td>
+                                <td>${category.catename}</td>
                                 <td>
                                     <c:choose>
                                         <c:when test="${not empty category.iconFilename}">
@@ -192,23 +238,18 @@
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
-                                <td>
-                                    <strong>${category.catename}</strong>
-                                    <c:if test="${not empty category.iconFilename}">
-                                        <br><small style="color: #666;">File: ${category.iconFilename}</small>
-                                    </c:if>
-                                </td>
                                 <td class="actions">
                                     <a href="${pageContext.request.contextPath}/admin/category/edit?id=${category.cateid}" 
-                                       class="btn btn-sm">Sửa</a>
+                                       class="btn">Cập nhật</a>
                                     <a href="javascript:void(0)" 
                                        onclick="deleteCategory(${category.cateid}, '${category.catename}')"
-                                       class="btn btn-danger btn-sm">Xóa</a>
+                                       class="btn btn-danger">Xóa</a>
                                 </td>
                             </tr>
                         </c:forEach>
                     </tbody>
-                </table>
+                    </table>
+                </div>
             </c:when>
             <c:otherwise>
                 <div class="empty-state">
@@ -237,6 +278,35 @@
                 form.submit();
             }
         }
+        
+        function searchCategories() {
+            const searchInput = document.getElementById('searchInput');
+            const searchText = searchInput.value.toLowerCase().trim();
+            const table = document.querySelector('table tbody');
+            const rows = table.getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const nameCell = rows[i].cells[1]; // Tên danh mục ở cột thứ 2
+                if (nameCell) {
+                    const nameText = nameCell.textContent.toLowerCase();
+                    if (nameText.includes(searchText)) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+        
+        // Tìm kiếm khi người dùng gõ
+        document.getElementById('searchInput').addEventListener('input', searchCategories);
+        
+        // Tìm kiếm khi nhấn Enter
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCategories();
+            }
+        });
     </script>
 </body>
 </html>

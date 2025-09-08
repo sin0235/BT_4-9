@@ -9,33 +9,62 @@
     <style>
         body { 
             font-family: Arial, sans-serif; 
-            margin: 20px; 
-            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
         }
         .container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
             background: white;
-            padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .form-header {
+            background-color: #b8daed;
+            padding: 15px 25px;
+            margin: 0;
+            font-size: 16px;
+            font-weight: normal;
+            color: #2c3e50;
+            border-bottom: 1px solid #a8cde2;
+        }
+        .form-content {
+            padding: 25px;
         }
         .form-group {
             margin-bottom: 20px;
         }
         label { 
             display: block; 
-            margin-bottom: 5px; 
+            margin-bottom: 8px; 
             font-weight: bold;
             color: #333;
+            font-size: 14px;
         }
-        input[type="text"], input[type="file"] { 
+        input[type="text"] { 
             width: 100%; 
-            padding: 10px; 
+            padding: 10px 12px; 
             border: 1px solid #ddd; 
             border-radius: 4px;
             box-sizing: border-box;
             font-size: 14px;
+            background-color: #fff;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,.25);
+        }
+        input[type="file"] { 
+            width: 100%; 
+            padding: 8px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+            background-color: #fff;
         }
         .current-icon {
             margin: 10px 0;
@@ -56,30 +85,34 @@
             margin-top: 5px;
         }
         .btn { 
-            padding: 12px 20px; 
-            background-color: #28a745; 
+            padding: 8px 16px; 
+            background-color: #6c757d; 
             color: white; 
-            border: none; 
+            border: 1px solid #6c757d; 
             border-radius: 4px; 
             cursor: pointer; 
             margin-right: 10px;
-            font-size: 16px;
+            font-size: 14px;
             text-decoration: none;
             display: inline-block;
         }
         .btn:hover { 
-            background-color: #218838; 
-        }
-        .btn-secondary { 
-            background-color: #6c757d; 
-        }
-        .btn-secondary:hover { 
             background-color: #5a6268; 
+            border-color: #545b62;
+        }
+        .btn-primary { 
+            background-color: #007bff; 
+            border-color: #007bff;
+        }
+        .btn-primary:hover { 
+            background-color: #0056b3; 
+            border-color: #004085;
         }
         .alert {
-            padding: 15px;
+            padding: 12px 15px;
             margin-bottom: 20px;
             border-radius: 4px;
+            border: 1px solid transparent;
         }
         .alert-error {
             background-color: #f8d7da;
@@ -93,11 +126,13 @@
         }
         .nav-links {
             margin-bottom: 20px;
+            padding: 0 25px;
         }
         .nav-links a {
             color: #007bff;
             text-decoration: none;
             margin-right: 15px;
+            font-size: 14px;
         }
         .nav-links a:hover {
             text-decoration: underline;
@@ -111,34 +146,37 @@
     </div>
 
     <div class="container">
-        <h1>${category != null ? 'Chỉnh Sửa Danh Mục' : 'Thêm Danh Mục Mới'}</h1>
+        <div class="form-header">
+            ${category != null ? 'Chỉnh Sửa Danh Mục' : 'Thêm danh mục'}
+        </div>
         
-        <c:if test="${not empty error}">
-            <div class="alert alert-error">
-                ${error}
-            </div>
-        </c:if>
-        
-        <c:if test="${not empty success}">
-            <div class="alert alert-success">
-                ${success}
-            </div>
-        </c:if>
-        
-        <form method="post" action="${pageContext.request.contextPath}/admin/category/${category != null ? 'update' : 'create'}"
-              enctype="multipart/form-data">
+        <div class="form-content">
+            <c:if test="${not empty error}">
+                <div class="alert alert-error">
+                    ${error}
+                </div>
+            </c:if>
+            
+            <c:if test="${not empty success}">
+                <div class="alert alert-success">
+                    ${success}
+                </div>
+            </c:if>
+            
+            <form method="post" action="${pageContext.request.contextPath}/admin/category/${category != null ? 'update' : 'create'}"
+                  enctype="multipart/form-data">
             <c:if test="${category != null}">
                 <input type="hidden" name="cateid" value="${category.cateid}" />
             </c:if>
             
-            <div class="form-group">
-                <label for="catename">Tên danh mục:</label>
-                <input type="text" id="catename" name="catename" value="${category.catename}" required 
-                       placeholder="Nhập tên danh mục"/>
-            </div>
-            
-            <div class="form-group">
-                <label for="icon">Icon ảnh:</label>
+                <div class="form-group">
+                    <label for="catename">Tên danh mục</label>
+                    <input type="text" id="catename" name="catename" value="${category.catename}" required 
+                           placeholder=""/>
+                </div>
+                
+                <div class="form-group">
+                    <label for="icon">Icon</label>
                 
                 <c:if test="${category != null && category.iconFilename != null}">
                     <div class="current-icon">
@@ -158,15 +196,16 @@
                 </div>
             </div>
             
-            <div class="form-group">
-                <button type="submit" class="btn">
-                    ${category != null ? 'Cập Nhật' : 'Thêm Mới'}
-                </button>
-                <a href="${pageContext.request.contextPath}/admin/category" class="btn btn-secondary">
-                    Hủy
-                </a>
-            </div>
-        </form>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        Submit
+                    </button>
+                    <a href="${pageContext.request.contextPath}/admin/category" class="btn">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
