@@ -36,8 +36,8 @@ public class User implements Serializable {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    @Column(name = "is_active")
-    private boolean isActive = true;
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
     
     // One user can have many categories
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -123,11 +123,11 @@ public class User implements Serializable {
         this.updatedAt = updatedAt;
     }
     
-    public boolean isActive() {
+    public Boolean isActive() {
         return isActive;
     }
     
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         isActive = active;
     }
     

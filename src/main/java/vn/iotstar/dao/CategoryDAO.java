@@ -59,7 +59,12 @@ public class CategoryDAO {
     public Category findById(Integer id) {
         EntityManager em = JPAConfig.getEntityManager();
         try {
-            return em.find(Category.class, id);
+            TypedQuery<Category> query = em.createQuery(
+                "SELECT c FROM Category c LEFT JOIN FETCH c.user WHERE c.cateid = :id", 
+                Category.class);
+            query.setParameter("id", id);
+            List<Category> results = query.getResultList();
+            return results.isEmpty() ? null : results.get(0);
         } finally {
             em.close();
         }
@@ -68,7 +73,7 @@ public class CategoryDAO {
     public List<Category> findAll() {
         EntityManager em = JPAConfig.getEntityManager();
         try {
-            String jpql = "SELECT c FROM Category c ORDER BY c.catename";
+            String jpql = "SELECT c FROM Category c LEFT JOIN FETCH c.user ORDER BY c.catename";
             TypedQuery<Category> query = em.createQuery(jpql, Category.class);
             return query.getResultList();
         } finally {
@@ -79,7 +84,7 @@ public class CategoryDAO {
     public List<Category> findByUserId(Integer userId) {
         EntityManager em = JPAConfig.getEntityManager();
         try {
-            String jpql = "SELECT c FROM Category c WHERE c.userId = :userId ORDER BY c.catename";
+            String jpql = "SELECT c FROM Category c LEFT JOIN FETCH c.user WHERE c.userId = :userId ORDER BY c.catename";
             TypedQuery<Category> query = em.createQuery(jpql, Category.class);
             query.setParameter("userId", userId);
             return query.getResultList();
@@ -92,7 +97,7 @@ public class CategoryDAO {
         EntityManager em = JPAConfig.getEntityManager();
         try {
             TypedQuery<Category> query = em.createQuery(
-                "SELECT c FROM Category c WHERE c.cateid = :categoryId AND c.userId = :userId", 
+                "SELECT c FROM Category c LEFT JOIN FETCH c.user WHERE c.cateid = :categoryId AND c.userId = :userId", 
                 Category.class);
             query.setParameter("categoryId", categoryId);
             query.setParameter("userId", userId);

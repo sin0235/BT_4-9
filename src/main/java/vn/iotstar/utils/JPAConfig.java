@@ -11,6 +11,14 @@ public class JPAConfig {
         try {
             factory = Persistence.createEntityManagerFactory("dataSource");
             System.out.println("JPA EntityManagerFactory initialized successfully");
+            
+            // Check database status and initialize if needed
+            DatabaseSetup.checkDatabaseStatus();
+            DatabaseSetup.initializeDatabase();
+            
+            // Fix any NULL is_active values
+            DatabaseFixUtil.fixIsActiveNullValues();
+            
         } catch (Exception e) {
             System.err.println("Failed to initialize JPA EntityManagerFactory: " + e.getMessage());
             e.printStackTrace();
