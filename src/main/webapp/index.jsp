@@ -86,12 +86,12 @@
             <div class="card-content">
                 <div class="description">
                     Chào mừng bạn đến với hệ thống quản lý danh mục.<br>
-                    Chọn chức năng bạn muốn sử dụng:
+                    Vui lòng đăng nhập để sử dụng hệ thống:
                 </div>
                 
                 <div class="nav-links">
-                    <a href="${pageContext.request.contextPath}/admin/category" class="nav-link primary">
-                        📁 Quản Lý Danh Mục
+                    <a href="${pageContext.request.contextPath}/login" class="nav-link primary">
+                        🔐 Đăng Nhập Hệ Thống
                     </a>
                 </div>
             </div>

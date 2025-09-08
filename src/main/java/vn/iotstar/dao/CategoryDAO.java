@@ -75,6 +75,60 @@ public class CategoryDAO {
             em.close();
         }
     }
+    
+    public List<Category> findByUserId(Integer userId) {
+        EntityManager em = JPAConfig.getEntityManager();
+        try {
+            String jpql = "SELECT c FROM Category c WHERE c.userId = :userId ORDER BY c.catename";
+            TypedQuery<Category> query = em.createQuery(jpql, Category.class);
+            query.setParameter("userId", userId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+    
+    public Category findByIdAndUserId(Integer categoryId, Integer userId) {
+        EntityManager em = JPAConfig.getEntityManager();
+        try {
+            TypedQuery<Category> query = em.createQuery(
+                "SELECT c FROM Category c WHERE c.cateid = :categoryId AND c.userId = :userId", 
+                Category.class);
+            query.setParameter("categoryId", categoryId);
+            query.setParameter("userId", userId);
+            List<Category> results = query.getResultList();
+            return results.isEmpty() ? null : results.get(0);
+        } finally {
+            em.close();
+        }
+    }
+    
+    public boolean isOwner(Integer categoryId, Integer userId) {
+        EntityManager em = JPAConfig.getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(c) FROM Category c WHERE c.cateid = :categoryId AND c.userId = :userId", 
+                Long.class);
+            query.setParameter("categoryId", categoryId);
+            query.setParameter("userId", userId);
+            return query.getSingleResult() > 0;
+        } finally {
+            em.close();
+        }
+    }
+    
+    public long countByUserId(Integer userId) {
+        EntityManager em = JPAConfig.getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(c) FROM Category c WHERE c.userId = :userId", 
+                Long.class);
+            query.setParameter("userId", userId);
+            return query.getSingleResult();
+        } finally {
+            em.close();
+        }
+    }
 
     public Category findByName(String catename) {
         EntityManager em = JPAConfig.getEntityManager();
@@ -82,6 +136,21 @@ public class CategoryDAO {
             TypedQuery<Category> query = em.createQuery(
                 "SELECT c FROM Category c WHERE c.catename = :catename", Category.class);
             query.setParameter("catename", catename);
+            List<Category> results = query.getResultList();
+            return results.isEmpty() ? null : results.get(0);
+        } finally {
+            em.close();
+        }
+    }
+    
+    public Category findByNameAndUserId(String catename, Integer userId) {
+        EntityManager em = JPAConfig.getEntityManager();
+        try {
+            TypedQuery<Category> query = em.createQuery(
+                "SELECT c FROM Category c WHERE c.catename = :catename AND c.userId = :userId", 
+                Category.class);
+            query.setParameter("catename", catename);
+            query.setParameter("userId", userId);
             List<Category> results = query.getResultList();
             return results.isEmpty() ? null : results.get(0);
         } finally {

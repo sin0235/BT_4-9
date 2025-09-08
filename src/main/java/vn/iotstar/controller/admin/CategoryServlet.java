@@ -6,9 +6,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import vn.iotstar.dao.CategoryDAO;
 import vn.iotstar.entity.Category;
+import vn.iotstar.entity.User;
 import vn.iotstar.utils.FileUtils;
 
 import java.io.IOException;
@@ -16,8 +18,8 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/admin/category", "/admin/category/create", "/admin/category/edit", 
-                          "/admin/category/update", "/admin/category/delete"})
+@WebServlet(urlPatterns = {"/admin/category", "/admin/category/add", "/admin/category/create", 
+                          "/admin/category/edit", "/admin/category/update", "/admin/category/delete", "/admin/category/view"})
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 1, // 1MB
     maxFileSize = 1024 * 1024 * 2,       // 2MB for icons
@@ -34,16 +36,28 @@ public class CategoryServlet extends HttpServlet {
         
         String path = request.getServletPath();
         
+        // Check user session and role
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) session.getAttribute("user");
+        if (currentUser == null || currentUser.getRoleId() != 3) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        
         try {
             switch (path) {
                 case "/admin/category":
-                    showCategoryList(request, response);
+                    response.sendRedirect(request.getContextPath() + "/admin/home");
                     break;
+                case "/admin/category/add":
                 case "/admin/category/edit":
                     showEditForm(request, response);
                     break;
+                case "/admin/category/view":
+                    showViewDetail(request, response);
+                    break;
                 default:
-                    showCategoryList(request, response);
+                    response.sendRedirect(request.getContextPath() + "/admin/home");
                     break;
             }
         } catch (Exception e) {
@@ -59,6 +73,14 @@ public class CategoryServlet extends HttpServlet {
         
         String path = request.getServletPath();
         
+        // Check user session and role
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) session.getAttribute("user");
+        if (currentUser == null || currentUser.getRoleId() != 3) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        
         try {
             switch (path) {
                 case "/admin/category/create":
@@ -71,7 +93,7 @@ public class CategoryServlet extends HttpServlet {
                     deleteCategory(request, response);
                     break;
                 default:
-                    response.sendRedirect(request.getContextPath() + "/admin/category");
+                    response.sendRedirect(request.getContextPath() + "/admin/home");
                     break;
             }
         } catch (Exception e) {
@@ -85,7 +107,18 @@ public class CategoryServlet extends HttpServlet {
             throws ServletException, IOException {
         List<Category> categories = categoryDao.findAll();
         request.setAttribute("categories", categories);
-        request.getRequestDispatcher("/WEB-INF/views/category-list.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/admin/home.jsp").forward(request, response);
+    }
+    
+    private void showViewDetail(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        String id = request.getParameter("id");
+        if (id != null) {
+            Category category = categoryDao.findById(Integer.parseInt(id));
+            request.setAttribute("category", category);
+            request.setAttribute("isView", true);
+        }
+        request.getRequestDispatcher("/WEB-INF/views/category-form.jsp").forward(request, response);
     }
     
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) 
@@ -116,7 +149,11 @@ public class CategoryServlet extends HttpServlet {
             return;
         }
         
-        Category category = new Category(catename);
+        // Get current user
+        HttpSession session = request.getSession();
+        User currentUser = (User) session.getAttribute("user");
+        
+        Category category = new Category(catename, currentUser.getUserId());
         
         // Handle icon upload
         String[] iconInfo = handleIconUpload(request);
@@ -126,8 +163,7 @@ public class CategoryServlet extends HttpServlet {
         }
         
         categoryDao.create(category);
-        request.setAttribute("success", "Thêm danh mục thành công!");
-        response.sendRedirect(request.getContextPath() + "/admin/category");
+        response.sendRedirect(request.getContextPath() + "/admin/home");
     }
     
     private void updateCategory(HttpServletRequest request, HttpServletResponse response) 
@@ -138,14 +174,14 @@ public class CategoryServlet extends HttpServlet {
         
         if (id == null || catename == null || catename.trim().isEmpty()) {
             request.setAttribute("error", "Thông tin không hợp lệ!");
-            response.sendRedirect(request.getContextPath() + "/admin/category");
+            response.sendRedirect(request.getContextPath() + "/admin/home");
             return;
         }
         
         Category category = categoryDao.findById(Integer.parseInt(id));
         if (category == null) {
             request.setAttribute("error", "Không tìm thấy danh mục!");
-            response.sendRedirect(request.getContextPath() + "/admin/category");
+            response.sendRedirect(request.getContextPath() + "/admin/home");
             return;
         }
         
@@ -172,7 +208,7 @@ public class CategoryServlet extends HttpServlet {
         }
         
         categoryDao.update(category);
-        response.sendRedirect(request.getContextPath() + "/admin/category");
+        response.sendRedirect(request.getContextPath() + "/admin/home");
     }
     
     private void deleteCategory(HttpServletRequest request, HttpServletResponse response) 
@@ -189,7 +225,7 @@ public class CategoryServlet extends HttpServlet {
                 categoryDao.remove(Integer.parseInt(id));
             }
         }
-        response.sendRedirect(request.getContextPath() + "/admin/category");
+        response.sendRedirect(request.getContextPath() + "/admin/home");
     }
     
     private String[] handleIconUpload(HttpServletRequest request) throws IOException, ServletException {
