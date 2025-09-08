@@ -9,4 +9,14 @@
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
     
+    <!-- Redirect root to login -->
+    <servlet>
+        <servlet-name>IndexRedirect</servlet-name>
+        <servlet-class>vn.iotstar.controller.IndexRedirectServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>IndexRedirect</servlet-name>
+        <url-pattern>/index</url-pattern>
+    </servlet-mapping>
+    
 </web-app>
