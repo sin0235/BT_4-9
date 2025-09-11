@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
 <c:set var="pageTitle" value="Profile - ${user.fullName}" />
 <jsp:include page="/WEB-INF/includes/header.jsp" />
@@ -163,7 +162,7 @@
                         </div>
                         <div class="info-label">Member Since:</div>
                         <div class="info-value">
-                            <fmt:formatDate value="${user.createdAt}" pattern="MMMM dd, yyyy" />
+                            <c:out value="${user.formattedCreatedAt}" />
                         </div>
                     </div>
                     
@@ -174,7 +173,7 @@
                             </div>
                             <div class="info-label">Last Updated:</div>
                             <div class="info-value">
-                                <fmt:formatDate value="${user.updatedAt}" pattern="MMMM dd, yyyy 'at' HH:mm" />
+                                <c:out value="${user.formattedUpdatedAt}" />
                             </div>
                         </div>
                     </c:if>
@@ -189,7 +188,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="border-end">
-                                    <h4 class="text-primary mb-1">${fn:length(user.categories)}</h4>
+                                    <h4 class="text-primary mb-1">${user.categoriesCount}</h4>
                                     <small class="text-muted">Categories</small>
                                 </div>
                             </div>

@@ -171,6 +171,22 @@ public class User implements Serializable {
         }
     }
     
+    public String getFormattedCreatedAt() {
+        if (createdAt == null) return "Unknown";
+        return createdAt.toLocalDate().toString() + " at " + 
+               createdAt.toLocalTime().toString().substring(0, 5);
+    }
+    
+    public String getFormattedUpdatedAt() {
+        if (updatedAt == null) return "Unknown";
+        return updatedAt.toLocalDate().toString() + " at " + 
+               updatedAt.toLocalTime().toString().substring(0, 5);
+    }
+    
+    public int getCategoriesCount() {
+        return categories != null ? categories.size() : 0;
+    }
+    
     public boolean isUser() {
         return roleId == 1;
     }

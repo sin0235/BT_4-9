@@ -36,7 +36,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2><i class="fas fa-list me-2"></i>Categories Dashboard</h2>
             <div>
-                <span class="badge bg-primary">Total: ${fn:length(categories)}</span>
+                <span class="badge bg-primary">Total: ${categories.size()}</span>
             </div>
         </div>
         
