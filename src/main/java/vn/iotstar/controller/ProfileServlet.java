@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import vn.iotstar.dao.UserDAO;
+import vn.iotstar.dao.CategoryDAO;
 import vn.iotstar.entity.User;
 import vn.iotstar.utils.FileUtils;
 
@@ -88,6 +89,11 @@ public class ProfileServlet extends HttpServlet {
             request.setAttribute("user", user);
         }
         
+        // Get categories count for this user
+        CategoryDAO categoryDAO = new CategoryDAO();
+        long categoriesCount = categoryDAO.countByUserId(user.getUserId());
+        request.setAttribute("categoriesCount", categoriesCount);
+        
         request.getRequestDispatcher("/WEB-INF/views/profile/profile.jsp").forward(request, response);
     }
 
@@ -131,29 +137,49 @@ public class ProfileServlet extends HttpServlet {
             // Update basic information
             userToUpdate.setFullName(fullName.trim());
             userToUpdate.setPhone(phone != null ? phone.trim() : null);
+            
+            // Update the updatedAt field manually since @PreUpdate might not trigger
+            userToUpdate.setUpdatedAt(java.time.LocalDateTime.now());
 
             // Handle file upload
             Part filePart = request.getPart("image");
             if (filePart != null && filePart.getSize() > 0) {
-                String fileName = FileUtils.saveUploadedFile(filePart, getServletContext());
-                if (fileName != null) {
-                    // Delete old image if exists
-                    if (userToUpdate.getImage() != null && !userToUpdate.getImage().isEmpty()) {
-                        FileUtils.deleteUploadedFile(userToUpdate.getImage(), getServletContext());
+                System.out.println("Processing file upload. File size: " + filePart.getSize() + " bytes");
+                try {
+                    String fileName = FileUtils.saveUploadedFile(filePart, getServletContext());
+                    if (fileName != null) {
+                        System.out.println("File saved successfully: " + fileName);
+                        // Delete old image if exists
+                        if (userToUpdate.getImage() != null && !userToUpdate.getImage().isEmpty()) {
+                            System.out.println("Deleting old image: " + userToUpdate.getImage());
+                            FileUtils.deleteUploadedFile(userToUpdate.getImage(), getServletContext());
+                        }
+                        userToUpdate.setImage(fileName);
+                    } else {
+                        System.out.println("Failed to save uploaded file");
                     }
-                    userToUpdate.setImage(fileName);
+                } catch (IOException e) {
+                    System.err.println("Error saving file: " + e.getMessage());
+                    request.setAttribute("error", "Failed to upload image: " + e.getMessage());
+                    showEditProfile(request, response, userToUpdate);
+                    return;
                 }
+            } else {
+                System.out.println("No file uploaded or file is empty");
             }
 
             // Update user in database
+            System.out.println("Updating user in database. User ID: " + userToUpdate.getUserId());
             boolean success = userDAO.update(userToUpdate);
             
             if (success) {
+                System.out.println("User updated successfully in database");
                 // Update session with new user data
                 session.setAttribute("user", userToUpdate);
                 request.setAttribute("message", "Profile updated successfully!");
                 showProfile(request, response, userToUpdate);
             } else {
+                System.err.println("Failed to update user in database");
                 request.setAttribute("error", "Failed to update profile. Please try again.");
                 showEditProfile(request, response, userToUpdate);
             }

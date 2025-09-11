@@ -188,20 +188,13 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="border-end">
-                                    <h4 class="text-primary mb-1">${user.categoriesCount}</h4>
+                                    <h4 class="text-primary mb-1">${categoriesCount}</h4>
                                     <small class="text-muted">Categories</small>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <h4 class="text-success mb-1">
-                                    <c:choose>
-                                        <c:when test="${user.active}">
-                                            <i class="fas fa-check-circle"></i>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <i class="fas fa-times-circle text-danger"></i>
-                                        </c:otherwise>
-                                    </c:choose>
+                                    <c:out value="${user.statusIcon}" escapeXml="false" />
                                 </h4>
                                 <small class="text-muted">Status</small>
                             </div>

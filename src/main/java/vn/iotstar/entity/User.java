@@ -145,6 +145,10 @@ public class User implements Serializable {
         this.updatedAt = updatedAt;
     }
     
+    public Boolean getActive() {
+        return isActive;
+    }
+    
     public Boolean isActive() {
         return isActive;
     }
@@ -183,8 +187,10 @@ public class User implements Serializable {
                updatedAt.toLocalTime().toString().substring(0, 5);
     }
     
-    public int getCategoriesCount() {
-        return categories != null ? categories.size() : 0;
+    public String getStatusIcon() {
+        return (isActive != null && isActive) ? 
+            "<i class=\"fas fa-check-circle\"></i>" : 
+            "<i class=\"fas fa-times-circle text-danger\"></i>";
     }
     
     public boolean isUser() {
