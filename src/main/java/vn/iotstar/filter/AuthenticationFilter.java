@@ -9,7 +9,7 @@ import vn.iotstar.entity.User;
 
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/user/*", "/manager/*", "/admin/*"})
+@WebFilter(urlPatterns = {"/user/*", "/manager/*", "/admin/*", "/profile", "/profile/*"})
 public class AuthenticationFilter implements Filter {
     
     @Override
@@ -68,6 +68,11 @@ public class AuthenticationFilter implements Filter {
     
     private boolean hasAccess(String requestURI, String contextPath, int roleId) {
         String path = requestURI.substring(contextPath.length());
+        
+        // Profile access is allowed for all logged-in users
+        if (path.startsWith("/profile")) {
+            return true;
+        }
         
         switch (roleId) {
             case 1: // User role

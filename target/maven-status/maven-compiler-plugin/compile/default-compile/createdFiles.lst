@@ -8,9 +8,11 @@ vn\iotstar\utils\JPAConfig.class
 vn\iotstar\controller\CategoryIconServlet.class
 vn\iotstar\controller\LogoutServlet.class
 vn\iotstar\filter\AuthenticationFilter.class
+vn\iotstar\controller\ProfileServlet.class
 vn\iotstar\utils\FileUtils.class
 vn\iotstar\utils\DatabaseFixUtil.class
 vn\iotstar\utils\DatabaseSetup.class
 vn\iotstar\entity\User.class
 vn\iotstar\controller\AdminHomeServlet.class
 vn\iotstar\dao\UserDAO.class
+vn\iotstar\controller\IndexRedirectServlet.class

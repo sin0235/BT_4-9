@@ -78,6 +78,9 @@
       <artifactId>commons-io</artifactId>
       <version>2.11.0</version>
     </dependency>
+    
+    <!-- SiteMesh 3 was removed due to Jakarta EE compatibility issues -->
+    <!-- Using include-based templating system instead -->
   </dependencies>
 
   <build>

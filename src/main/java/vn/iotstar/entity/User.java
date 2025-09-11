@@ -27,6 +27,12 @@ public class User implements Serializable {
     @Column(name = "full_name", length = 100, nullable = false)
     private String fullName;
     
+    @Column(name = "phone", length = 20)
+    private String phone;
+    
+    @Column(name = "image", length = 255)
+    private String image;
+    
     @Column(name = "role_id", nullable = false)
     private int roleId = 1; // Default: User role
     
@@ -97,6 +103,22 @@ public class User implements Serializable {
     
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+    
+    public String getPhone() {
+        return phone;
+    }
+    
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    
+    public String getImage() {
+        return image;
+    }
+    
+    public void setImage(String image) {
+        this.image = image;
     }
     
     public int getRoleId() {
